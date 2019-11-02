@@ -171,6 +171,14 @@ def main():
     )
 
     parser.add_option(
+        '--get_bgcolor_rgba',
+        dest='get_bgcolor_rgba',
+        action='store_true',
+        default=False,
+        help=_('Return the selected tab background color.')
+    )
+
+    parser.add_option(
         '--split-vertical',
         dest='split_vertical',
         action='store_true',
@@ -210,6 +218,15 @@ def main():
         action='store',
         default='',
         help=_('Set the hexadecimal (#rrggbb) background color of '
+               'the selected tab.')
+    )
+
+    parser.add_option(
+        '--set_bgcolor_rgba',
+        dest='bgcolor_rgba',
+        action='store',
+        default='',
+        help=_('Set the RGBA (R,G,B,A) background color of '
                'the selected tab.')
     )
 
@@ -443,6 +460,16 @@ def main():
         sys.stdout.write('%s\n' % selectedlabel)
         only_show_hide = options.show
 
+    if options.get_bgcolor_rgba:
+        bg_color = remote_object.get_bgcolor_rgba()
+        sys.stdout.write('%s\n' % bg_color)
+        only_show_hide = options.show
+
+    if options.selected_tablabel:
+        selectedlabel = remote_object.get_selected_tablabel()
+        sys.stdout.write('%s\n' % selectedlabel)
+        only_show_hide = options.show
+
     if options.split_vertical:
         remote_object.v_split_current_terminal()
         only_show_hide = options.show
@@ -464,6 +491,12 @@ def main():
 
     if options.bgcolor:
         remote_object.set_bgcolor(options.bgcolor)
+        only_show_hide = options.show
+
+    if options.bgcolor_rgba:
+        set_bgcolor_result = remote_object.set_bgcolor_rgba(options.bgcolor_rgba)
+        if set_bgcolor_result:
+            sys.stdout.write('%s\n' % set_bgcolor_result)
         only_show_hide = options.show
 
     if options.fgcolor:

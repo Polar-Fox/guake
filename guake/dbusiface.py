@@ -83,6 +83,10 @@ class DbusManager(dbus.service.Object):
         return self.guake.get_notebook(
         ).get_tab_text_index(self.guake.get_notebook().get_current_page())
 
+    @dbus.service.method(DBUS_NAME, out_signature='s')
+    def get_bgcolor_rgba(self):
+        return self.guake.get_bgcolor().to_string()
+
     @dbus.service.method(DBUS_NAME, out_signature='i')
     def get_tab_count(self):
         return len(self.guake.notebook_manager.get_terminals())
@@ -90,6 +94,10 @@ class DbusManager(dbus.service.Object):
     @dbus.service.method(DBUS_NAME, in_signature='s')
     def set_bgcolor(self, bgcolor):
         return self.guake.set_bgcolor(bgcolor)
+
+    @dbus.service.method(DBUS_NAME, in_signature='s', out_signature='s')
+    def set_bgcolor_rgba(self, bgcolor):
+        return self.guake.set_bgcolor_rgba(bgcolor)
 
     @dbus.service.method(DBUS_NAME, in_signature='s')
     def set_fgcolor(self, fgcolor):

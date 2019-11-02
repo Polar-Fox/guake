@@ -369,6 +369,28 @@ class Guake(SimpleGladeApp):
         for terminal in self.get_notebook().get_nth_page(page_num).iter_terminals():
             terminal.set_color_background(bgcolor)
 
+    def set_bgcolor_rgba(self, bgcolor_rgba):
+        if isinstance(bgcolor_rgba, str):
+            try:
+                r, g, b, a = map(lambda s: float(s),
+                                 bgcolor_rgba.split('(', 1)[1].split(')')[0].split(','))
+
+                c = Gdk.RGBA(r/255, g/255, b/255, a if a > -1 else 1)
+                bgcolor_rgba = c
+            except:
+                return 'Wrong color format. Must be: "rgba(R, G, B, A)".\n' \
+                       'R, G, B, A are float numbers.\n' \
+                       'A can be -1. In that case A will not be affected.'
+        if not isinstance(bgcolor_rgba, Gdk.RGBA):
+            raise TypeError("color should be Gdk.RGBA, is: {!r}".format(bgcolor_rgba))
+        if a == -1:
+            bgcolor_rgba = self._apply_transparency_to_color(bgcolor_rgba)
+        log.debug("setting background color to: %r", bgcolor_rgba)
+        page_num = self.get_notebook().get_current_page()
+        for terminal in self.get_notebook().get_nth_page(page_num).iter_terminals():
+            terminal.set_color_background(bgcolor_rgba)
+        return ''
+
     def set_fgcolor(self, fgcolor):
         if isinstance(fgcolor, str):
             c = Gdk.RGBA(0, 0, 0, 0)
